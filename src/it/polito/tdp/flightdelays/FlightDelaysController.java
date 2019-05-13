@@ -20,9 +20,8 @@ import javafx.scene.control.TextField;
  * Sample Skeleton for 'FlightDelays.fxml' Controller Class
  */
 
-
-
 public class FlightDelaysController {
+	
 	private Model model;
 
     @FXML // ResourceBundle that was given to the FXMLLoader
@@ -52,6 +51,12 @@ public class FlightDelaysController {
     @FXML
     void doAnalizzaAeroporti(ActionEvent event) {
 
+    	try {
+    	model.creaGrafo(Integer.parseInt(distanzaMinima.getText()));
+    	}catch(NumberFormatException e) {
+    		txtResult.appendText("Inserire un valore corretto");
+    	}
+    	
     }
 
     @FXML
@@ -74,6 +79,7 @@ public class FlightDelaysController {
 		this.model = model;
 	}
 }
+
 
 
 
