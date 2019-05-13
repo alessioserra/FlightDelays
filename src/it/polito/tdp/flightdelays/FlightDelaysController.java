@@ -7,8 +7,14 @@
 package it.polito.tdp.flightdelays;
 
 import java.net.URL;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
+import org.w3c.dom.NamedNodeMap;
+
+import it.polito.tdp.extflightdelays.model.Airport;
 import it.polito.tdp.extflightdelays.model.Model;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -23,6 +29,7 @@ import javafx.scene.control.TextField;
 public class FlightDelaysController {
 	
 	private Model model;
+	Map<String,Airport> nameMap = new HashMap<String,Airport>();
 
     @FXML // ResourceBundle that was given to the FXMLLoader
     private ResourceBundle resources;
@@ -53,6 +60,7 @@ public class FlightDelaysController {
 
     	try {
     	model.creaGrafo(Integer.parseInt(distanzaMinima.getText()));
+    	txtResult.appendText("Grafo Creato!");
     	}catch(NumberFormatException e) {
     		txtResult.appendText("Inserire un valore corretto");
     	}
@@ -61,7 +69,23 @@ public class FlightDelaysController {
 
     @FXML
     void doTestConnessione(ActionEvent event) {
-
+    	
+    	txtResult.clear();
+    	
+    	//Acquisisco id aereoporti
+    	int id1 = nameMap.get(cmbBoxAeroportoPartenza.getValue()).getId();
+    	int id2 = nameMap.get(cmbBoxAeroportoArrivo.getValue()).getId();
+    	
+    	if (model.testConnessione(id1, id2)) {
+    	List<Airport> aereoporti = model.trovaPercorso(id1,id2);
+    	txtResult.appendText("PERCORSO:\n");
+    		for (Airport a : aereoporti) {
+    			txtResult.appendText(a.getAirportName()+"\n");
+    		}
+    	}
+    	else {
+    	    txtResult.appendText("Nessun percorso trovato");
+    	}
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
@@ -76,7 +100,10 @@ public class FlightDelaysController {
     }
     
     public void setModel(Model model) {
+    	
 		this.model = model;
+		cmbBoxAeroportoPartenza.getItems().addAll(model.getAereoporti(nameMap));
+		cmbBoxAeroportoArrivo.getItems().addAll(model.getAereoporti(nameMap));
 	}
 }
 

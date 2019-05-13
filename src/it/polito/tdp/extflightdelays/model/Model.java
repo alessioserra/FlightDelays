@@ -29,6 +29,12 @@ public class Model {
 	List<Rotta> rotte;
 	Map<Airport,Airport> visita = new HashMap<>();
 	
+	public List<String> getAereoporti(Map<String,Airport> nameMap){
+		
+		ExtFlightDelaysDAO dao = new ExtFlightDelaysDAO();
+		return dao.getAereoporti(nameMap);
+	}
+	
 	public void creaGrafo(int distanzaMinima) {
 		
 		//Creo grafo

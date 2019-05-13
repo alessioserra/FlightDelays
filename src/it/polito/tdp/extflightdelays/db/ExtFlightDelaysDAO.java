@@ -16,6 +16,37 @@ import it.polito.tdp.extflightdelays.model.Flight;
 import it.polito.tdp.extflightdelays.model.Rotta;
 
 public class ExtFlightDelaysDAO {
+	
+	public List<String> getAereoporti(Map<String,Airport> nameMap) {
+		
+		String sql = "SELECT * FROM airports";
+		List<String> result = new ArrayList<String>();
+
+		try {
+			Connection conn = DBConnect.getConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+			ResultSet rs = st.executeQuery();
+
+			while (rs.next()) {			
+				
+				result.add(rs.getString("AIRPORT"));	
+				
+				Airport airport = new Airport(rs.getInt("ID"), rs.getString("IATA_CODE"), rs.getString("AIRPORT"),
+						rs.getString("CITY"), rs.getString("STATE"), rs.getString("COUNTRY"), rs.getDouble("LATITUDE"),
+						rs.getDouble("LONGITUDE"), rs.getDouble("TIMEZONE_OFFSET"));
+				
+				nameMap.put(rs.getString("AIRPORT"), airport);
+			}
+
+			conn.close();
+			return result;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("Errore connessione al database");
+			throw new RuntimeException("Error Connection Database");
+		}
+	}
 
 	public List<Airline> loadAllAirlines() {
 		String sql = "SELECT * from airlines";
